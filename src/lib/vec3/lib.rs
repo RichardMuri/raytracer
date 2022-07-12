@@ -67,7 +67,7 @@ where
         }
     }
 
-    fn length_squared(self) -> T {
+    pub fn length_squared(self) -> T {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
