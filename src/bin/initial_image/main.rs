@@ -12,8 +12,8 @@ fn main() {
             let r: f64 = i as f64 / (IMAGE_WIDTH - 1) as f64;
             let g: f64 = j as f64 / (IMAGE_HEIGHT - 1) as f64;
             let b = 0.25;
-            let pixel: Color<f64> = Color { x: r, y: g, z: b };
-            Vec3::write_color(pixel);
+            let pixel: Color = Color { x: r, y: g, z: b };
+            pixel.write_color();
         }
     }
 }

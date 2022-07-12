@@ -3,6 +3,7 @@ extern crate impl_ops;
 use std::ops;
 
 use num_traits::{cast::FromPrimitive, float::Float};
+use std::convert;
 use std::fmt;
 use std::ops::{
     Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign,
@@ -15,17 +16,33 @@ pub struct Vec3<T: Float> {
     pub z: T,
 }
 
-// type Point3<T> = Vec3<T>;
-pub type Color<T> = Vec3<T>;
-
-pub fn example<T: Float + FromPrimitive>() -> Vec3<T> {
-    Vec3::zero()
+impl<T> From<(T, T, T)> for Vec3<T>
+where
+    T: Float,
+{
+    fn from(t: (T, T, T)) -> Vec3<T> {
+        Vec3 {
+            x: t.0,
+            y: t.1,
+            z: t.2,
+        }
+    }
 }
+
+pub type Point3 = Vec3<f64>;
+pub type Color = Vec3<f64>;
 
 impl<T> Vec3<T>
 where
     T: Float + FromPrimitive,
 {
+    pub fn new(xvalue: T, yvalue: T, zvalue: T) -> Vec3<T> {
+        Vec3 {
+            x: xvalue,
+            y: yvalue,
+            z: zvalue,
+        }
+    }
     pub fn zero() -> Vec3<T> {
         Vec3 {
             x: T::from_f64(0.0).unwrap(),
@@ -60,8 +77,8 @@ where
     }
 
     #[inline]
-    pub fn dot(u: &Vec3<T>, v: &Vec3<T>) -> T {
-        u[0] * v[0] + u[1] * v[1] + u[2] * v[2]
+    pub fn dot(&self, v: &Vec3<T>) -> T {
+        self[0] * v[0] + self[1] * v[1] + self[2] * v[2]
     }
 
     #[inline]
@@ -74,11 +91,11 @@ where
     }
 
     #[inline]
-    pub fn unit_vector(v: Vec3<T>) -> Vec3<T> {
-        return v / v.length();
+    pub fn unit_vector(self) -> Vec3<T> {
+        return self / self.length();
     }
 
-    pub fn write_color(self) {
+    pub fn write_color(&self) {
         // Write the translated [0,255] value of each color component.
         let ir: i32 = (255.999 * T::to_f64(&self.x).unwrap()) as i32;
         let ig: i32 = (255.999 * T::to_f64(&self.y).unwrap()) as i32;
