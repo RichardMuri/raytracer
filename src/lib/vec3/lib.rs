@@ -2,14 +2,14 @@
 extern crate impl_ops;
 use std::ops;
 
+use num::clamp;
 use num_traits::{cast::FromPrimitive, float::Float};
-use std::convert;
 use std::fmt;
-use std::ops::{
-    Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign,
-};
+// use std::ops::{Add, AddAssign};
+use rand::distributions::{Distribution, Uniform};
+use std::ops::{Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Vec3<T: Float> {
     pub x: T,
     pub y: T,
@@ -102,6 +102,56 @@ where
         let ib: i32 = (255.999 * T::to_f64(&self.z).unwrap()) as i32;
 
         println!("{ir} {ig} {ib}");
+    }
+
+    pub fn write_color_aa(&self, samples_per_pixel: i64) {
+        let scale = 1.0 / samples_per_pixel as f64;
+        let r = T::to_f64(&self.x).unwrap() * scale;
+        let g = T::to_f64(&self.y).unwrap() * scale;
+        let b = T::to_f64(&self.z).unwrap() * scale;
+
+        let ir = (256.0 * clamp(r, 0.0, 0.999)) as i32;
+        let ig = (256.0 * clamp(g, 0.0, 0.999)) as i32;
+        let ib = (256.0 * clamp(b, 0.0, 0.999)) as i32;
+
+        println!("{ir} {ig} {ib}")
+    }
+
+    pub fn random() -> Self {
+        let mut rng = rand::thread_rng();
+        let dist = Uniform::from(0.0..1.0);
+        let randx = dist.sample(&mut rng);
+        let randy = dist.sample(&mut rng);
+        let randz = dist.sample(&mut rng);
+        Vec3 {
+            x: T::from(randx).unwrap(),
+            y: T::from(randy).unwrap(),
+            z: T::from(randz).unwrap(),
+        }
+    }
+
+    pub fn random_range(min: f64, max: f64) -> Self {
+        let mut rng = rand::thread_rng();
+        let dist = Uniform::from(min..max);
+        let randx = dist.sample(&mut rng);
+        let randy = dist.sample(&mut rng);
+        let randz = dist.sample(&mut rng);
+        Vec3 {
+            x: T::from(randx).unwrap(),
+            y: T::from(randy).unwrap(),
+            z: T::from(randz).unwrap(),
+        }
+    }
+
+    pub fn random_in_unit_sphere() -> Self {
+        let mut point = Self::random_range(-1.0, 1.0);
+        loop {
+            if T::to_f64(&point.length_squared()).unwrap() < 1.0 {
+                break;
+            }
+            point = Vec3::random_range(-1.0, 1.0);
+        }
+        return point;
     }
 }
 

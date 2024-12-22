@@ -15,14 +15,20 @@ path = "src/bin/initial_image/main.rs"
 name = "initial_ray"
 path = "src/bin/initial_ray/main.rs"
 
+[[bin]]
+name = "hittable_list"
+path = "src/bin/hittable_list/main.rs"
+
 [lib]
 name = "vec3"
 path = "src/lib/vec3/lib.rs"
 
 
 [dependencies]
+box = "0.0.0"
 fmt = "0.1.0"
 impl_ops = "0.1.1"
 num = "0.4.0"
 num-traits = "0.2.15"
 ops = "0.6.0"
+rand = "0.8.5"
