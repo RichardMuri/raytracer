@@ -1,5 +1,5 @@
 use vec3::*;
-#[path = "../../ray.rs"]
+#[path = "../../common/ray.rs"]
 mod ray;
 
 fn hit_sphere(center: &Point3, radius: f64, r: &ray::Ray) -> f64 {

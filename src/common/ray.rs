@@ -1,8 +1,5 @@
 use vec3::*;
 
-type Point3 = Vec3<f64>;
-type Direction = Vec3<f64>;
-
 pub struct Ray {
     orig: Point3,
     dir: Direction,

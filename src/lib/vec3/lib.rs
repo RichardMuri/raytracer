@@ -29,6 +29,7 @@ where
     }
 }
 
+pub type Direction = Vec3<f64>;
 pub type Point3 = Vec3<f64>;
 pub type Color = Vec3<f64>;
 
@@ -115,6 +116,14 @@ where
         let ib = (256.0 * clamp(b, 0.0, 0.999)) as i32;
 
         println!("{ir} {ig} {ib}")
+    }
+
+    pub fn sample_square() -> Vec3<T> {
+        // Returns the vector to a random point in the [(-0.5,-0.5), (0.5, 0.5)]
+        // unit square.
+        let mut rand_vec = Self::random_range(-0.5, 0.5);
+        rand_vec.z = T::from(0.0).unwrap();
+        rand_vec
     }
 
     pub fn random() -> Self {

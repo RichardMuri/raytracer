@@ -1,17 +1,16 @@
+#![allow(dead_code, unused_imports)]
+use core::f64;
+
 use vec3::*;
 
-use crate::hittable::HittableList;
-#[path = "../../hittable.rs"]
-mod hittable;
-#[path = "../../ray.rs"]
-mod ray;
+use crate::common::{hittable, ray::Ray, sphere::Sphere, util::Interval};
+#[path = "../../common/mod.rs"]
+mod common;
 
-#[path = "../../sphere.rs"]
-mod sphere;
 
-fn ray_color(r: &ray::Ray, world: &dyn hittable::Hittable) -> Color {
+fn ray_color(r: &Ray, world: &dyn hittable::Hittable) -> Color {
     let mut rec = hittable::HitRecord::new();
-    if world.hit(r, 0.0, f64::INFINITY, &mut rec) {
+    if world.hit(r, Interval::new(0.0, f64::INFINITY), &mut rec) {
         return (rec.normal() + Color::from_float(1.0)) * 0.5;
     }
 
@@ -29,12 +28,12 @@ fn main() {
     const IMAGE_HEIGHT: i64 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i64;
 
     // World
-    let mut world = HittableList::new();
-    world.objects.push(Box::new(sphere::Sphere::new(
+    let mut world = hittable::HittableList::new();
+    world.objects.push(Box::new(Sphere::new(
         Point3::new(0.0, 0.0, -1.0),
         0.5,
     )));
-    world.objects.push(Box::new(sphere::Sphere::new(
+    world.objects.push(Box::new(Sphere::new(
         Point3::new(0.0, -100.5, -1.0),
         100.0,
     )));
@@ -60,7 +59,7 @@ fn main() {
             let u: f64 = i as f64 / (IMAGE_WIDTH - 1) as f64;
             let v: f64 = j as f64 / (IMAGE_HEIGHT - 1) as f64;
             let direction = lower_left_corner + horizontal * u + vertical * v - origin;
-            let r = ray::Ray::new(origin, direction);
+            let r = Ray::new(origin, direction);
             let pixel = ray_color(&r, &world);
             pixel.write_color();
         }
